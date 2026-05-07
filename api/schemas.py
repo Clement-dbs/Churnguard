@@ -23,15 +23,22 @@ class PredictionRequest(BaseModel):
 
     Contract: Literal["Month-to-month", "One year", "Two year"]
     PaperlessBilling: Literal["Yes", "No"]
-    PaymentMethod: Literal["Electronic check", "Bank transfer (automatic)", "Mailed check", "Credit card (automatic)"]
+    PaymentMethod: Literal[
+        "Electronic check",
+        "Bank transfer (automatic)",
+        "Mailed check",
+        "Credit card (automatic)",
+    ]
 
     MonthlyCharges: float = Field(gt=0)
     TotalCharges: float = Field(gt=0)
+
 
 class PredictionResponse(BaseModel):
     churn: bool
     churn_probability: float
     risk_level: Literal["LOW", "MEDIUM", "HIGH"]
+
 
 def compute_risk(prob):
     if prob < 0.3:
@@ -39,4 +46,3 @@ def compute_risk(prob):
     elif prob < 0.6:
         return "MEDIUM"
     return "HIGH"
-

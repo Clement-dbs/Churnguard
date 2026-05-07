@@ -11,8 +11,10 @@ from churnguard.evaluate import compute_metrics
 
 models = {
     "logreg": LogisticRegression(max_iter=1000),
-    "random_forest": RandomForestClassifier(n_estimators=200, max_depth=10, random_state=42),
-    "gradient_boosting": GradientBoostingClassifier()
+    "random_forest": RandomForestClassifier(
+        n_estimators=200, max_depth=10, random_state=42
+    ),
+    "gradient_boosting": GradientBoostingClassifier(),
 }
 
 
@@ -25,13 +27,13 @@ def train_model(X_train, X_test, y_train, y_test, preprocessed) -> Pipeline:
     best_score = -1
 
     for name, clf in models.items():
-
         with mlflow.start_run(run_name=name):
-
-            model = Pipeline([
-                ('prep', preprocessed),
-                ('clf', clf),
-            ])
+            model = Pipeline(
+                [
+                    ("prep", preprocessed),
+                    ("clf", clf),
+                ]
+            )
 
             model.fit(X_train, y_train)
 
@@ -44,22 +46,17 @@ def train_model(X_train, X_test, y_train, y_test, preprocessed) -> Pipeline:
 
             mlflow.sklearn.log_model(model, "model")
 
-            score = metrics["recall_score"] 
+            score = metrics["recall_score"]
 
             if score > best_score:
                 best_score = score
                 best_model = model
 
-   
     with mlflow.start_run(run_name="best_model"):
-
         mlflow.sklearn.log_model(
-            best_model,
-            "model",
-            registered_model_name="churnguard"
+            best_model, "model", registered_model_name="churnguard"
         )
 
-   
     client = MlflowClient()
 
     latest_version = client.get_latest_versions("churnguard")[0]
@@ -68,7 +65,7 @@ def train_model(X_train, X_test, y_train, y_test, preprocessed) -> Pipeline:
         name="churnguard",
         version=latest_version.version,
         stage="Production",
-        archive_existing_versions=True
+        archive_existing_versions=True,
     )
 
     return best_model

@@ -1,4 +1,3 @@
-# main.py
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
@@ -11,7 +10,9 @@ import os
 import glob
 
 
-logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
+)
 logger = logging.getLogger(__name__)
 
 mlflow.set_tracking_uri(os.getenv("MLFLOW_TRACKING_URI", "file:./mlruns"))
@@ -40,7 +41,7 @@ app.add_middleware(
 def root():
     return {
         "message": "Welcome to Churnguard API !",
-        "docs": "Visit http://localhost:8000/docs for interactive API documentation"
+        "docs": "Visit http://localhost:8000/docs for interactive API documentation",
     }
 
 
@@ -54,9 +55,7 @@ def predict(request: PredictionRequest):
         risk = compute_risk(proba)
 
         return PredictionResponse(
-            churn=bool(pred),
-            churn_probability=float(proba),
-            risk_level=risk
+            churn=bool(pred), churn_probability=float(proba), risk_level=risk
         )
     except Exception as e:
         logger.error(f"Erreur : {e}")
@@ -68,7 +67,7 @@ def health_check():
     return {
         "status": "ok",
         "model": "churnguard",
-        "version": os.path.basename(os.path.dirname(model_dir))
+        "version": os.path.basename(os.path.dirname(model_dir)),
     }
 
 
