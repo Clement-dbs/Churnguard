@@ -8,7 +8,7 @@ def load_data(path: str) -> pd.DataFrame:
     return pd.read_csv(path)
 
 
-def preprocess(df: pd.DataFrame) -> tuple[pd.DataFrame, pd.Series]:
+def preprocess(df: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame, pd.Series, pd.Series, ColumnTransformer]:
     df["TotalCharges"] = pd.to_numeric(df["TotalCharges"], errors="coerce")
     df = df.dropna()
     df = df.drop(columns=["customerID"])
