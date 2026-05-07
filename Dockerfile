@@ -21,7 +21,6 @@ WORKDIR /app
 COPY --from=builder /opt/venv /opt/venv
 COPY api/ ./api/
 COPY churnguard/ ./churnguard/
-COPY mlruns/ ./mlruns/
 
 ENV PATH="/opt/venv/bin:$PATH" \
     PYTHONDONTWRITEBYTECODE=1 \
