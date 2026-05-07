@@ -1,0 +1,34 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+*.egg-info/
+
+# Tests
+.pytest_cache/
+.coverage
+tests/
+
+# Data & notebooks
+data/
+notebook/
+scripts/
+
+# Git
+.git/
+.gitignore
+
+# Docker
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# Divers
+*.md
+*.png
+*.docx
+mlflow.db
+
+# MLflow — exclut les artefacts inutiles, garde uniquement mlruns
+mlruns/.trash/

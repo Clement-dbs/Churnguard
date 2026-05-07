@@ -1,0 +1,44 @@
+# docker-compose.yml
+services:
+
+  mlflow:
+    image: ghcr.io/mlflow/mlflow:v2.22.0
+    command: >
+      mlflow server
+      --backend-store-uri sqlite:////mlflow/mlflow.db
+      --default-artifact-root /mlruns
+      --host 0.0.0.0
+      --port 5000
+      --serve-artifacts
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./mlruns:/mlruns
+      - mlflow_db:/mlflow
+    networks:
+      - churnguard_net
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://0.0.0.0:5000/health')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  api:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      - MLFLOW_TRACKING_URI=file:///app/mlruns
+    depends_on:
+      mlflow:
+        condition: service_healthy
+    networks:
+      - churnguard_net
+
+networks:
+  churnguard_net:
+    driver: bridge
+
+volumes:
+  mlflow_db:
