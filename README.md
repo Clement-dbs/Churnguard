@@ -90,14 +90,20 @@ git clone https://github.com/Clement-dbs/Churnguard.git
 cd Churnguard
 
 # 2. Charger le .venv avec les dépendances
-python -m venv .venv && source .\.venv\Scripts\activate.ps1 
+python -m venv .venv
+.\.venv\Scripts\activate.ps1 
+
 pip install -r requirements.txt
 
-python -m churnguard.train
+python -m churnguard.main
+
+# http://localhost:5000
+mlflow ui
 
 # 3. Lancer les services
 docker compose up --build
 ```
+MLflow UI disponible sur [http://localhost:5000](http://localhost:5000)
 
 ### Vérifier que tout est up
 
@@ -113,7 +119,6 @@ curl http://localhost:8000/health
 }
 ```
 
-MLflow UI disponible sur [http://localhost:5000](http://localhost:5000).
 
 Swagger UI disponible sur [http://localhost:8000/docs](http://localhost:8000/docs).
 
@@ -162,25 +167,6 @@ curl -X POST http://localhost:8000/predict \
 | `LOW`        | < 0.3               | Aucune action           |
 | `MEDIUM`     | 0.3 – 0.5           | Surveiller le client    |
 | `HIGH`       | > 0.5               | Contacter immédiatement |
-
----
-
-
-## Développement local
-
-```bash
-# Installer les dépendances
-pip install -r requirements-api.txt
-
-# Tests
-pytest tests/ --cov=churnguard --cov-report=term-missing --cov-fail-under=70
-
-# Lint
-ruff check . && ruff format --check .
-
-# Typecheck
-mypy churnguard/ api/ --ignore-missing-imports
-```
 
 ---
 
